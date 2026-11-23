@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Questionnaire – Impact of Digitalization on Customer Engagement</title>
+<style>
+:root { --ink:#1d2433; --muted:#5b6475; --line:#dfe3ea; --bg:#f5f6f8; --accent:#1f4e8c; --accent-soft:#e8eef8; --err:#b3261e; }
+* { box-sizing:border-box; }
+body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color:var(--ink); background:var(--bg); line-height:1.5; }
+.wrap { max-width:860px; margin:0 auto; padding:16px; }
+header.card { border-top:6px solid var(--accent); }
+.card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:20px; margin-bottom:16px; }
+h1 { font-size:1.25rem; margin:0 0 4px; text-align:center; letter-spacing:.02em; }
+h1 small { display:block; font-size:.85rem; color:var(--muted); font-weight:600; letter-spacing:.1em; }
+h2 { font-size:1.05rem; margin:0 0 12px; color:var(--accent); }
+h3 { font-size:.95rem; margin:20px 0 8px; text-transform:uppercase; letter-spacing:.04em; }
+p { margin:.5em 0; }
+.muted { color:var(--muted); font-size:.92rem; }
+.progress { position:sticky; top:0; z-index:5; background:var(--bg); padding:8px 0; }
+.bar { height:6px; background:var(--line); border-radius:99px; overflow:hidden; }
+.bar i { display:block; height:100%; width:0; background:var(--accent); transition:width .2s; }
+.bar-label { font-size:.78rem; color:var(--muted); margin-top:4px; text-align:right; }
+fieldset { border:0; margin:0; padding:0; min-width:0; }
+.q { padding:14px 0; border-bottom:1px solid var(--line); }
+.q:last-child { border-bottom:0; }
+legend { font-weight:600; padding:0; margin-bottom:8px; }
+.n { color:var(--accent); }
+.req { color:var(--err); }
+.opts { display:flex; flex-wrap:wrap; gap:8px; }
+.opt { display:flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:8px; padding:8px 12px; cursor:pointer; background:#fff; font-size:.95rem; }
+.opt:has(input:checked) { border-color:var(--accent); background:var(--accent-soft); }
+.opt input { accent-color:var(--accent); margin:0; }
+input.other, textarea { width:100%; margin-top:8px; padding:10px; border:1px solid var(--line); border-radius:8px; font:inherit; }
+input.other { display:none; }
+input.other.show { display:block; }
+.scale-key { display:flex; flex-wrap:wrap; gap:6px 14px; font-size:.85rem; color:var(--muted); background:var(--accent-soft); padding:8px 12px; border-radius:8px; }
+.lrow { padding:12px 0; border-bottom:1px solid var(--line); }
+.lrow legend { font-weight:500; }
+.scale { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
+.lk { display:flex; flex-direction:column; align-items:center; gap:2px; border:1px solid var(--line); border-radius:8px; padding:8px 4px; cursor:pointer; text-align:center; }
+.lk input { position:absolute; opacity:0; pointer-events:none; }
+.lk .v { font-weight:700; font-size:1.05rem; }
+.lk .t { font-size:.7rem; color:var(--muted); line-height:1.2; }
+.lk:has(input:checked) { background:var(--accent); border-color:var(--accent); }
+.lk:has(input:checked) .v, .lk:has(input:checked) .t { color:#fff; }
+.lk:has(input:focus-visible) { outline:3px solid #9ab8e6; }
+.missing { background:#fdecea; border-radius:8px; padding-left:8px; padding-right:8px; }
+button { width:100%; padding:14px; font:inherit; font-weight:700; font-size:1rem; color:#fff; background:var(--accent); border:0; border-radius:10px; cursor:pointer; }
+button:disabled { opacity:.6; cursor:wait; }
+#msg { margin-top:10px; color:var(--err); font-weight:600; text-align:center; }
+.thanks { text-align:center; padding:40px 20px; }
+.thanks h2 { font-size:1.4rem; }
+@media (max-width:520px) { .lk .t { display:none; } .wrap { padding:10px; } .card { padding:16px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="card">
+  <h1><small>QUESTIONNAIRE</small>The Impact of Digitalization on Customer Engagement in the Banking Sector of Moradabad Division</h1>
+  <p><strong>Dear Respondent,</strong></p>
+  <p>I am conducting a Ph.D. research study entitled <strong>“The Impact of Digitalization on Customer Engagement in the Banking Sector of Moradabad Division.”</strong> The study aims to examine the impact of digitalization on customer engagement, particularly with reference to service quality, 24/7 accessibility, customization and security. It also examines customer engagement through behavioural, emotional and cognitive dimensions and compares Public Sector and Private Sector Banks.</p>
+  <p>Please respond honestly on the basis of your actual experience of using digital banking services. Your responses will be kept confidential and used only for academic and research purposes. Your identity will not be disclosed.</p>
+  <p class="muted">Select the appropriate option. Where multiple responses are permitted, you may select more than one option. Questions marked <span class="req">*</span> are required.</p>
+</header>
+
+<div class="progress"><div class="bar"><i id="barFill"></i></div><div class="bar-label" id="barLabel">0% complete</div></div>
+
+<form id="survey" novalidate>
+<input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+
+<section class="card"><h2>Section A: Demographic Profile of Respondents</h2>
+<fieldset class="q" id="q1_gender"><legend><span class="n">1.</span> Gender <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q1_gender" value="Male" required><span>Male</span></label>
+<label class="opt"><input type="radio" name="q1_gender" value="Female" required><span>Female</span></label>
+<label class="opt"><input type="radio" name="q1_gender" value="Transgender" required><span>Transgender</span></label>
+<label class="opt"><input type="radio" name="q1_gender" value="Prefer not to say" required><span>Prefer not to say</span></label>
+</div>
+</fieldset>
+<fieldset class="q" id="q2_age"><legend><span class="n">2.</span> Age <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q2_age" value="Below 20 years" required><span>Below 20 years</span></label>
+<label class="opt"><input type="radio" name="q2_age" value="21–30 years" required><span>21–30 years</span></label>
+<label class="opt"><input type="radio" name="q2_age" value="31–40 years" required><span>31–40 years</span></label>
+<label class="opt"><input type="radio" name="q2_age" value="41–50 years" required><span>41–50 years</span></label>
+<label class="opt"><input type="radio" name="q2_age" value="51–60 years" required><span>51–60 years</span></label>
+<label class="opt"><input type="radio" name="q2_age" value="Above 60 years" required><span>Above 60 years</span></label>
+</div>
+</fieldset>
+<fieldset class="q" id="q3_education"><legend><span class="n">3.</span> Educational Qualification <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q3_education" value="Below Matriculation" required><span>Below Matriculation</span></label>
+<label class="opt"><input type="radio" name="q3_education" value="Matriculation" required><span>Matriculation</span></label>
+<label class="opt"><input type="radio" name="q3_education" value="Undergraduate" required><span>Undergraduate</span></label>
+<label class="opt"><input type="radio" name="q3_education" value="Graduate" required><span>Graduate</span></label>
+<label class="opt"><input type="radio" name="q3_education" value="Postgraduate" required><span>Postgraduate</span></label>
+<label class="opt"><input type="radio" name="q3_education" value="Professional/Technical Qualification" required><span>Professional/Technical Qualification</span></label>
+<label class="opt"><input type="radio" name="q3_education" value="Other" required><span>Other</span></label>
+</div>
+<input class="other" type="text" name="q3_education_other" maxlength="150" placeholder="If Other, please specify" data-for="q3_education">
+</fieldset>
+<fieldset class="q" id="q4_marital_status"><legend><span class="n">4.</span> Marital Status <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q4_marital_status" value="Married" required><span>Married</span></label>
+<label class="opt"><input type="radio" name="q4_marital_status" value="Unmarried" required><span>Unmarried</span></label>
+<label class="opt"><input type="radio" name="q4_marital_status" value="Divorced/Separated" required><span>Divorced/Separated</span></label>
+<label class="opt"><input type="radio" name="q4_marital_status" value="Widowed" required><span>Widowed</span></label>
+<label class="opt"><input type="radio" name="q4_marital_status" value="Other" required><span>Other</span></label>
+</div>
+<input class="other" type="text" name="q4_marital_status_other" maxlength="150" placeholder="If Other, please specify" data-for="q4_marital_status">
+</fieldset>
+<fieldset class="q" id="q5_monthly_income"><legend><span class="n">5.</span> Monthly Income <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q5_monthly_income" value="Below ₹10,000" required><span>Below ₹10,000</span></label>
+<label class="opt"><input type="radio" name="q5_monthly_income" value="₹10,001–₹20,000" required><span>₹10,001–₹20,000</span></label>
+<label class="opt"><input type="radio" name="q5_monthly_income" value="₹20,001–₹30,000" required><span>₹20,001–₹30,000</span></label>
+<label class="opt"><input type="radio" name="q5_monthly_income" value="₹30,001–₹40,000" required><span>₹30,001–₹40,000</span></label>
+<label class="opt"><input type="radio" name="q5_monthly_income" value="₹40,001–₹50,000" required><span>₹40,001–₹50,000</span></label>
+<label class="opt"><input type="radio" name="q5_monthly_income" value="Above ₹50,000" required><span>Above ₹50,000</span></label>
+</div>
+</fieldset>
+<fieldset class="q" id="q6_occupation"><legend><span class="n">6.</span> Occupation <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q6_occupation" value="Student" required><span>Student</span></label>
+<label class="opt"><input type="radio" name="q6_occupation" value="Government/Public Sector Employee" required><span>Government/Public Sector Employee</span></label>
+<label class="opt"><input type="radio" name="q6_occupation" value="Private Sector Employee" required><span>Private Sector Employee</span></label>
+<label class="opt"><input type="radio" name="q6_occupation" value="Self-employed/Business" required><span>Self-employed/Business</span></label>
+<label class="opt"><input type="radio" name="q6_occupation" value="Professional" required><span>Professional</span></label>
+<label class="opt"><input type="radio" name="q6_occupation" value="Homemaker" required><span>Homemaker</span></label>
+<label class="opt"><input type="radio" name="q6_occupation" value="Retired" required><span>Retired</span></label>
+<label class="opt"><input type="radio" name="q6_occupation" value="Other" required><span>Other</span></label>
+</div>
+<input class="other" type="text" name="q6_occupation_other" maxlength="150" placeholder="If Other, please specify" data-for="q6_occupation">
+</fieldset>
+<fieldset class="q" id="q7_residence"><legend><span class="n">7.</span> Area of Residence <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q7_residence" value="Rural" required><span>Rural</span></label>
+<label class="opt"><input type="radio" name="q7_residence" value="Semi-Urban" required><span>Semi-Urban</span></label>
+<label class="opt"><input type="radio" name="q7_residence" value="Urban" required><span>Urban</span></label>
+</div>
+</fieldset>
+</section>
+
+<section class="card"><h2>Section B: Banking and Digital Banking Profile</h2>
+<fieldset class="q" id="q8_bank_type"><legend><span class="n">8.</span> Which type of bank do you primarily use for your savings account? <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q8_bank_type" value="Public Sector Bank" required><span>Public Sector Bank</span></label>
+<label class="opt"><input type="radio" name="q8_bank_type" value="Private Sector Bank" required><span>Private Sector Bank</span></label>
+<label class="opt"><input type="radio" name="q8_bank_type" value="Cooperative Bank" required><span>Cooperative Bank</span></label>
+<label class="opt"><input type="radio" name="q8_bank_type" value="Other" required><span>Other</span></label>
+</div>
+<input class="other" type="text" name="q8_bank_type_other" maxlength="150" placeholder="If Other, please specify" data-for="q8_bank_type">
+</fieldset>
+<fieldset class="q" id="q9_aware"><legend><span class="n">9.</span> Are you aware of digital banking services? <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q9_aware" value="Yes" required><span>Yes</span></label>
+<label class="opt"><input type="radio" name="q9_aware" value="No" required><span>No</span></label>
+</div>
+</fieldset>
+<fieldset class="q multi" id="q10"><legend><span class="n">10.</span> Which digital banking services do you currently use? (Multiple responses permitted) <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="checkbox" name="q10_internet_banking" value="1"><span>Internet Banking</span></label>
+<label class="opt"><input type="checkbox" name="q10_mobile_banking" value="1"><span>Mobile Banking</span></label>
+<label class="opt"><input type="checkbox" name="q10_upi" value="1"><span>UPI</span></label>
+<label class="opt"><input type="checkbox" name="q10_debit_credit_card_services" value="1"><span>Debit/Credit Card Services</span></label>
+<label class="opt"><input type="checkbox" name="q10_atm_services" value="1"><span>ATM Services</span></label>
+<label class="opt"><input type="checkbox" name="q10_qr_code_payments" value="1"><span>QR Code Payments</span></label>
+<label class="opt"><input type="checkbox" name="q10_mobile_wallets" value="1"><span>Mobile Wallets</span></label>
+<label class="opt"><input type="checkbox" name="q10_online_bill_payments" value="1"><span>Online Bill Payments</span></label>
+<label class="opt"><input type="checkbox" name="q10_other" value="1"><span>Other</span></label>
+</div>
+<input class="other" type="text" name="q10_other_text" maxlength="150" placeholder="If Other, please specify" data-for-check="q10_other">
+</fieldset>
+<fieldset class="q" id="q11_frequency"><legend><span class="n">11.</span> How frequently do you use digital banking services? <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q11_frequency" value="Several times a day" required><span>Several times a day</span></label>
+<label class="opt"><input type="radio" name="q11_frequency" value="Daily" required><span>Daily</span></label>
+<label class="opt"><input type="radio" name="q11_frequency" value="Several times a week" required><span>Several times a week</span></label>
+<label class="opt"><input type="radio" name="q11_frequency" value="Once a week" required><span>Once a week</span></label>
+<label class="opt"><input type="radio" name="q11_frequency" value="Occasionally" required><span>Occasionally</span></label>
+<label class="opt"><input type="radio" name="q11_frequency" value="Rarely" required><span>Rarely</span></label>
+</div>
+</fieldset>
+<fieldset class="q" id="q12_duration"><legend><span class="n">12.</span> How long have you been using digital banking services? <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q12_duration" value="Less than 1 year" required><span>Less than 1 year</span></label>
+<label class="opt"><input type="radio" name="q12_duration" value="1–3 years" required><span>1–3 years</span></label>
+<label class="opt"><input type="radio" name="q12_duration" value="4–6 years" required><span>4–6 years</span></label>
+<label class="opt"><input type="radio" name="q12_duration" value="7–10 years" required><span>7–10 years</span></label>
+<label class="opt"><input type="radio" name="q12_duration" value="More than 10 years" required><span>More than 10 years</span></label>
+</div>
+</fieldset>
+<fieldset class="q multi" id="q13"><legend><span class="n">13.</span> What is your main purpose for using digital banking services? (Multiple responses permitted) <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="checkbox" name="q13_fund_transfer" value="1"><span>Fund Transfer</span></label>
+<label class="opt"><input type="checkbox" name="q13_account_balance_enquiry" value="1"><span>Account Balance Enquiry</span></label>
+<label class="opt"><input type="checkbox" name="q13_online_shopping_payments" value="1"><span>Online Shopping/Payments</span></label>
+<label class="opt"><input type="checkbox" name="q13_bill_payments_and_recharge" value="1"><span>Bill Payments and Recharge</span></label>
+<label class="opt"><input type="checkbox" name="q13_bank_statements" value="1"><span>Bank Statements</span></label>
+<label class="opt"><input type="checkbox" name="q13_investment_financial_services" value="1"><span>Investment/Financial Services</span></label>
+<label class="opt"><input type="checkbox" name="q13_loan_related_services" value="1"><span>Loan-related Services</span></label>
+<label class="opt"><input type="checkbox" name="q13_other" value="1"><span>Other</span></label>
+</div>
+<input class="other" type="text" name="q13_other_text" maxlength="150" placeholder="If Other, please specify" data-for-check="q13_other">
+</fieldset>
+<fieldset class="q" id="q14_info_source"><legend><span class="n">14.</span> What is your main source of information about digital banking? <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q14_info_source" value="Bank/Bank Employees" required><span>Bank/Bank Employees</span></label>
+<label class="opt"><input type="radio" name="q14_info_source" value="Friends and Relatives" required><span>Friends and Relatives</span></label>
+<label class="opt"><input type="radio" name="q14_info_source" value="Social Media" required><span>Social Media</span></label>
+<label class="opt"><input type="radio" name="q14_info_source" value="Internet/Websites" required><span>Internet/Websites</span></label>
+<label class="opt"><input type="radio" name="q14_info_source" value="Television/Newspapers" required><span>Television/Newspapers</span></label>
+<label class="opt"><input type="radio" name="q14_info_source" value="Advertisements" required><span>Advertisements</span></label>
+<label class="opt"><input type="radio" name="q14_info_source" value="Other" required><span>Other</span></label>
+</div>
+<input class="other" type="text" name="q14_info_source_other" maxlength="150" placeholder="If Other, please specify" data-for="q14_info_source">
+</fieldset>
+<fieldset class="q" id="q15_main_factor"><legend><span class="n">15.</span> What is the main factor encouraging you to use digital banking? <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q15_main_factor" value="Convenience" required><span>Convenience</span></label>
+<label class="opt"><input type="radio" name="q15_main_factor" value="Time Saving" required><span>Time Saving</span></label>
+<label class="opt"><input type="radio" name="q15_main_factor" value="Ease of Use" required><span>Ease of Use</span></label>
+<label class="opt"><input type="radio" name="q15_main_factor" value="24/7 Accessibility" required><span>24/7 Accessibility</span></label>
+<label class="opt"><input type="radio" name="q15_main_factor" value="Security" required><span>Security</span></label>
+<label class="opt"><input type="radio" name="q15_main_factor" value="Better Service Quality" required><span>Better Service Quality</span></label>
+<label class="opt"><input type="radio" name="q15_main_factor" value="Personalized Services" required><span>Personalized Services</span></label>
+<label class="opt"><input type="radio" name="q15_main_factor" value="Other" required><span>Other</span></label>
+</div>
+<input class="other" type="text" name="q15_main_factor_other" maxlength="150" placeholder="If Other, please specify" data-for="q15_main_factor">
+</fieldset>
+</section>
+
+<section class="card"><h2>Section C: Digitalization of Banking Services</h2>
+<p class="muted">Please indicate your level of agreement with each statement based on your experience.</p>
+<div class="scale-key"><span>5 = Strongly Agree</span><span>4 = Agree</span><span>3 = Neutral</span><span>2 = Disagree</span><span>1 = Strongly Disagree</span></div>
+<h3>C1. Service Quality</h3><div class="likert">
+<fieldset class="lrow" id="q16_sq1"><legend><span class="n">16.</span> Digital banking services provided by my bank are easy to use.</legend><div class="scale"><label class="lk"><input type="radio" name="q16_sq1" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q16_sq1" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q16_sq1" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q16_sq1" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q16_sq1" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q17_sq2"><legend><span class="n">17.</span> Digital banking transactions are completed quickly and efficiently.</legend><div class="scale"><label class="lk"><input type="radio" name="q17_sq2" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q17_sq2" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q17_sq2" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q17_sq2" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q17_sq2" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q18_sq3"><legend><span class="n">18.</span> My bank&#x27;s digital banking services are reliable and consistent.</legend><div class="scale"><label class="lk"><input type="radio" name="q18_sq3" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q18_sq3" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q18_sq3" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q18_sq3" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q18_sq3" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q19_sq4"><legend><span class="n">19.</span> My bank&#x27;s mobile application/website is user-friendly.</legend><div class="scale"><label class="lk"><input type="radio" name="q19_sq4" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q19_sq4" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q19_sq4" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q19_sq4" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q19_sq4" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q20_sq5"><legend><span class="n">20.</span> Digital banking services provide accurate and updated information.</legend><div class="scale"><label class="lk"><input type="radio" name="q20_sq5" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q20_sq5" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q20_sq5" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q20_sq5" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q20_sq5" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q21_sq6"><legend><span class="n">21.</span> My bank responds promptly to complaints and problems related to digital banking.</legend><div class="scale"><label class="lk"><input type="radio" name="q21_sq6" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q21_sq6" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q21_sq6" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q21_sq6" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q21_sq6" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+</div>
+<h3>C2. 24/7 Accessibility</h3><div class="likert">
+<fieldset class="lrow" id="q22_acc1"><legend><span class="n">22.</span> I can access my bank account at any time through digital channels.</legend><div class="scale"><label class="lk"><input type="radio" name="q22_acc1" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q22_acc1" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q22_acc1" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q22_acc1" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q22_acc1" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q23_acc2"><legend><span class="n">23.</span> I can perform banking transactions outside normal banking hours.</legend><div class="scale"><label class="lk"><input type="radio" name="q23_acc2" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q23_acc2" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q23_acc2" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q23_acc2" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q23_acc2" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q24_acc3"><legend><span class="n">24.</span> Digital banking services are accessible during weekends and public holidays.</legend><div class="scale"><label class="lk"><input type="radio" name="q24_acc3" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q24_acc3" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q24_acc3" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q24_acc3" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q24_acc3" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q25_acc4"><legend><span class="n">25.</span> I can access digital banking services from different locations.</legend><div class="scale"><label class="lk"><input type="radio" name="q25_acc4" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q25_acc4" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q25_acc4" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q25_acc4" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q25_acc4" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q26_acc5"><legend><span class="n">26.</span> Digital banking enables me to complete urgent transactions without visiting a bank branch.</legend><div class="scale"><label class="lk"><input type="radio" name="q26_acc5" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q26_acc5" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q26_acc5" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q26_acc5" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q26_acc5" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q27_acc6"><legend><span class="n">27.</span> The availability of digital banking services encourages me to interact more frequently with my bank.</legend><div class="scale"><label class="lk"><input type="radio" name="q27_acc6" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q27_acc6" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q27_acc6" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q27_acc6" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q27_acc6" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+</div>
+<h3>C3. Customization</h3><div class="likert">
+<fieldset class="lrow" id="q28_cus1"><legend><span class="n">28.</span> My bank provides digital banking services according to different customer needs.</legend><div class="scale"><label class="lk"><input type="radio" name="q28_cus1" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q28_cus1" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q28_cus1" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q28_cus1" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q28_cus1" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q29_cus2"><legend><span class="n">29.</span> My bank offers personalized digital banking services.</legend><div class="scale"><label class="lk"><input type="radio" name="q29_cus2" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q29_cus2" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q29_cus2" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q29_cus2" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q29_cus2" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q30_cus3"><legend><span class="n">30.</span> I can customize my preferences on digital banking platforms.</legend><div class="scale"><label class="lk"><input type="radio" name="q30_cus3" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q30_cus3" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q30_cus3" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q30_cus3" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q30_cus3" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q31_cus4"><legend><span class="n">31.</span> I receive digital offers and services relevant to my financial needs.</legend><div class="scale"><label class="lk"><input type="radio" name="q31_cus4" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q31_cus4" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q31_cus4" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q31_cus4" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q31_cus4" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q32_cus5"><legend><span class="n">32.</span> My bank provides personalized notifications and transaction alerts.</legend><div class="scale"><label class="lk"><input type="radio" name="q32_cus5" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q32_cus5" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q32_cus5" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q32_cus5" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q32_cus5" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q33_cus6"><legend><span class="n">33.</span> My bank recommends products and services based on my banking requirements.</legend><div class="scale"><label class="lk"><input type="radio" name="q33_cus6" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q33_cus6" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q33_cus6" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q33_cus6" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q33_cus6" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+</div>
+<h3>C4. Security</h3><div class="likert">
+<fieldset class="lrow" id="q34_sec1"><legend><span class="n">34.</span> I feel secure while conducting transactions through digital banking services.</legend><div class="scale"><label class="lk"><input type="radio" name="q34_sec1" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q34_sec1" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q34_sec1" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q34_sec1" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q34_sec1" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q35_sec2"><legend><span class="n">35.</span> My bank adequately protects my personal information.</legend><div class="scale"><label class="lk"><input type="radio" name="q35_sec2" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q35_sec2" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q35_sec2" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q35_sec2" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q35_sec2" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q36_sec3"><legend><span class="n">36.</span> My financial information remains secure while using digital banking services.</legend><div class="scale"><label class="lk"><input type="radio" name="q36_sec3" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q36_sec3" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q36_sec3" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q36_sec3" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q36_sec3" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q37_sec4"><legend><span class="n">37.</span> My bank uses appropriate authentication measures to protect my account.</legend><div class="scale"><label class="lk"><input type="radio" name="q37_sec4" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q37_sec4" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q37_sec4" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q37_sec4" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q37_sec4" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q38_sec5"><legend><span class="n">38.</span> I trust my bank to protect me against digital banking fraud.</legend><div class="scale"><label class="lk"><input type="radio" name="q38_sec5" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q38_sec5" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q38_sec5" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q38_sec5" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q38_sec5" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q39_sec6"><legend><span class="n">39.</span> Security features increase my confidence in using digital banking services.</legend><div class="scale"><label class="lk"><input type="radio" name="q39_sec6" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q39_sec6" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q39_sec6" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q39_sec6" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q39_sec6" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+</div>
+</section>
+
+<section class="card"><h2>Section D: Customer Engagement</h2>
+<p class="muted">Customer engagement is measured through behavioural, emotional and cognitive dimensions. Please use the same five-point scale.</p>
+<div class="scale-key"><span>5 = Strongly Agree</span><span>4 = Agree</span><span>3 = Neutral</span><span>2 = Disagree</span><span>1 = Strongly Disagree</span></div>
+<h3>D1. Behavioural Customer Engagement</h3><div class="likert">
+<fieldset class="lrow" id="q40_be1"><legend><span class="n">40.</span> I frequently use my bank&#x27;s digital banking services.</legend><div class="scale"><label class="lk"><input type="radio" name="q40_be1" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q40_be1" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q40_be1" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q40_be1" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q40_be1" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q41_be2"><legend><span class="n">41.</span> I prefer digital banking channels for my routine banking transactions.</legend><div class="scale"><label class="lk"><input type="radio" name="q41_be2" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q41_be2" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q41_be2" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q41_be2" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q41_be2" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q42_be3"><legend><span class="n">42.</span> I actively use different digital services offered by my bank.</legend><div class="scale"><label class="lk"><input type="radio" name="q42_be3" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q42_be3" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q42_be3" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q42_be3" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q42_be3" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q43_be4"><legend><span class="n">43.</span> I am willing to try new digital banking services introduced by my bank.</legend><div class="scale"><label class="lk"><input type="radio" name="q43_be4" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q43_be4" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q43_be4" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q43_be4" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q43_be4" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q44_be5"><legend><span class="n">44.</span> I intend to continue using my bank&#x27;s digital banking services in the future.</legend><div class="scale"><label class="lk"><input type="radio" name="q44_be5" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q44_be5" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q44_be5" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q44_be5" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q44_be5" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+</div>
+<h3>D2. Emotional Customer Engagement</h3><div class="likert">
+<fieldset class="lrow" id="q45_ee1"><legend><span class="n">45.</span> I feel comfortable while using my bank&#x27;s digital banking services.</legend><div class="scale"><label class="lk"><input type="radio" name="q45_ee1" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q45_ee1" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q45_ee1" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q45_ee1" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q45_ee1" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q46_ee2"><legend><span class="n">46.</span> I feel satisfied with my bank&#x27;s digital banking services.</legend><div class="scale"><label class="lk"><input type="radio" name="q46_ee2" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q46_ee2" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q46_ee2" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q46_ee2" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q46_ee2" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q47_ee3"><legend><span class="n">47.</span> I feel confident while conducting transactions through digital banking.</legend><div class="scale"><label class="lk"><input type="radio" name="q47_ee3" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q47_ee3" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q47_ee3" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q47_ee3" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q47_ee3" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q48_ee4"><legend><span class="n">48.</span> I feel positively connected with my bank through its digital services.</legend><div class="scale"><label class="lk"><input type="radio" name="q48_ee4" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q48_ee4" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q48_ee4" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q48_ee4" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q48_ee4" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q49_ee5"><legend><span class="n">49.</span> I feel that my bank values me as a digital banking customer.</legend><div class="scale"><label class="lk"><input type="radio" name="q49_ee5" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q49_ee5" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q49_ee5" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q49_ee5" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q49_ee5" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+</div>
+<h3>D3. Cognitive Customer Engagement</h3><div class="likert">
+<fieldset class="lrow" id="q50_ce1"><legend><span class="n">50.</span> I actively think about the digital banking services offered by my bank.</legend><div class="scale"><label class="lk"><input type="radio" name="q50_ce1" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q50_ce1" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q50_ce1" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q50_ce1" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q50_ce1" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q51_ce2"><legend><span class="n">51.</span> I pay attention to new digital products and services introduced by my bank.</legend><div class="scale"><label class="lk"><input type="radio" name="q51_ce2" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q51_ce2" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q51_ce2" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q51_ce2" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q51_ce2" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q52_ce3"><legend><span class="n">52.</span> I try to understand the features and benefits of new digital banking services.</legend><div class="scale"><label class="lk"><input type="radio" name="q52_ce3" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q52_ce3" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q52_ce3" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q52_ce3" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q52_ce3" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q53_ce4"><legend><span class="n">53.</span> I actively seek information about my bank&#x27;s digital banking services.</legend><div class="scale"><label class="lk"><input type="radio" name="q53_ce4" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q53_ce4" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q53_ce4" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q53_ce4" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q53_ce4" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+<fieldset class="lrow" id="q54_ce5"><legend><span class="n">54.</span> I am interested in learning about new digital technologies introduced by my bank.</legend><div class="scale"><label class="lk"><input type="radio" name="q54_ce5" value="5" required><span class="v">5</span><span class="t">Strongly Agree</span></label><label class="lk"><input type="radio" name="q54_ce5" value="4" required><span class="v">4</span><span class="t">Agree</span></label><label class="lk"><input type="radio" name="q54_ce5" value="3" required><span class="v">3</span><span class="t">Neutral</span></label><label class="lk"><input type="radio" name="q54_ce5" value="2" required><span class="v">2</span><span class="t">Disagree</span></label><label class="lk"><input type="radio" name="q54_ce5" value="1" required><span class="v">1</span><span class="t">Strongly Disagree</span></label></div></fieldset>
+</div>
+</section>
+
+<section class="card"><h2>Section E: Comparison and Overall Perception</h2>
+<fieldset class="q" id="q55_digital_bank_type"><legend><span class="n">55.</span> Which type of bank do you primarily use for digital banking? <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q55_digital_bank_type" value="Public Sector Bank" required><span>Public Sector Bank</span></label>
+<label class="opt"><input type="radio" name="q55_digital_bank_type" value="Private Sector Bank" required><span>Private Sector Bank</span></label>
+</div>
+</fieldset>
+<fieldset class="q" id="q56_better_bank"><legend><span class="n">56.</span> Which type of bank do you think provides better digital banking services? <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q56_better_bank" value="Public Sector Bank" required><span>Public Sector Bank</span></label>
+<label class="opt"><input type="radio" name="q56_better_bank" value="Private Sector Bank" required><span>Private Sector Bank</span></label>
+<label class="opt"><input type="radio" name="q56_better_bank" value="Both are equally good" required><span>Both are equally good</span></label>
+<label class="opt"><input type="radio" name="q56_better_bank" value="Cannot say" required><span>Cannot say</span></label>
+</div>
+</fieldset>
+<fieldset class="q" id="q57_main_influence"><legend><span class="n">57.</span> Which factor most influences your engagement with your bank&#x27;s digital services? <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q57_main_influence" value="Service Quality" required><span>Service Quality</span></label>
+<label class="opt"><input type="radio" name="q57_main_influence" value="24/7 Accessibility" required><span>24/7 Accessibility</span></label>
+<label class="opt"><input type="radio" name="q57_main_influence" value="Customization" required><span>Customization</span></label>
+<label class="opt"><input type="radio" name="q57_main_influence" value="Security" required><span>Security</span></label>
+<label class="opt"><input type="radio" name="q57_main_influence" value="All of the above" required><span>All of the above</span></label>
+</div>
+</fieldset>
+<fieldset class="q" id="q58_interaction_increased"><legend><span class="n">58.</span> Compared with traditional branch banking, digital banking has increased my interaction with my bank. <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q58_interaction_increased" value="Strongly Agree" required><span>Strongly Agree</span></label>
+<label class="opt"><input type="radio" name="q58_interaction_increased" value="Agree" required><span>Agree</span></label>
+<label class="opt"><input type="radio" name="q58_interaction_increased" value="Neutral" required><span>Neutral</span></label>
+<label class="opt"><input type="radio" name="q58_interaction_increased" value="Disagree" required><span>Disagree</span></label>
+<label class="opt"><input type="radio" name="q58_interaction_increased" value="Strongly Disagree" required><span>Strongly Disagree</span></label>
+</div>
+</fieldset>
+<fieldset class="q" id="q59_overall_rating"><legend><span class="n">59.</span> Overall, how would you rate your experience with your bank&#x27;s digital banking services? <span class="req">*</span></legend><div class="opts">
+<label class="opt"><input type="radio" name="q59_overall_rating" value="Excellent" required><span>Excellent</span></label>
+<label class="opt"><input type="radio" name="q59_overall_rating" value="Very Good" required><span>Very Good</span></label>
+<label class="opt"><input type="radio" name="q59_overall_rating" value="Good" required><span>Good</span></label>
+<label class="opt"><input type="radio" name="q59_overall_rating" value="Average" required><span>Average</span></label>
+<label class="opt"><input type="radio" name="q59_overall_rating" value="Poor" required><span>Poor</span></label>
+</div>
+</fieldset>
+<fieldset class="q"><legend><span class="n">60.</span> What suggestions would you like to provide for improving customer engagement through digital banking services?</legend>
+<textarea name="q60_suggestions" rows="4" maxlength="2000" placeholder="Your suggestions (optional)"></textarea></fieldset>
+</section>
+
+<div class="card">
+  <button type="submit" id="submitBtn">Submit Response</button>
+  <div id="msg" role="alert"></div>
+</div>
+</form>
+
+<div class="card thanks" id="thanks" hidden>
+  <h2>THANK YOU</h2>
+  <p>Thank you for your valuable time and participation in this research study.</p>
+</div>
+
+</div>
+<script>
+  // ===== SUPABASE SETTINGS (edit these 2 lines) =====
+  // Supabase dashboard > Project Settings > API (or "Connect")
+  var SUPABASE_URL = 'https://azohqqfsorgutpnyolgp.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_7dLi3ojMwpcUv16ulh5EFQ_0GwYXWnQ';
+  // ===================================================
+</script>
+<script>
+(function () {
+  var form = document.getElementById('survey');
+  var multiGroups = { q10: 'Q10', q13: 'Q13' };
+
+  // Show "Other – please specify" boxes only when Other is chosen
+  form.querySelectorAll('input.other').forEach(function (box) {
+    var radioName = box.dataset.for, checkName = box.dataset.forCheck;
+    function sync() {
+      var on = radioName
+        ? (form.querySelector('input[name="' + radioName + '"]:checked') || {}).value === 'Other'
+        : form.querySelector('input[name="' + checkName + '"]').checked;
+      box.classList.toggle('show', !!on);
+      box.required = !!on;
+      if (!on) box.value = '';
+    }
+    form.addEventListener('change', sync); sync();
+  });
+
+  // Progress bar
+  var requiredNames = Array.from(new Set(Array.from(form.querySelectorAll('input[type=radio][required]')).map(function (i) { return i.name; })));
+  var total = requiredNames.length + Object.keys(multiGroups).length;
+  function done() {
+    var n = requiredNames.filter(function (nm) { return form.querySelector('input[name="' + nm + '"]:checked'); }).length;
+    Object.keys(multiGroups).forEach(function (g) { if (form.querySelector('#' + g + ' input[type=checkbox]:checked')) n++; });
+    return n;
+  }
+  function updateBar() {
+    var pct = Math.round(done() / total * 100);
+    document.getElementById('barFill').style.width = pct + '%';
+    document.getElementById('barLabel').textContent = pct + '% complete';
+  }
+  form.addEventListener('change', updateBar);
+
+  // Validate + submit
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    form.querySelectorAll('.missing').forEach(function (el) { el.classList.remove('missing'); });
+    var firstBad = null;
+    requiredNames.forEach(function (nm) {
+      if (!form.querySelector('input[name="' + nm + '"]:checked')) {
+        var fs = form.querySelector('input[name="' + nm + '"]').closest('fieldset');
+        fs.classList.add('missing'); firstBad = firstBad || fs;
+      }
+    });
+    Object.keys(multiGroups).forEach(function (g) {
+      if (!form.querySelector('#' + g + ' input[type=checkbox]:checked')) {
+        var fs = document.getElementById(g); fs.classList.add('missing'); firstBad = firstBad || fs;
+      }
+    });
+    form.querySelectorAll('input.other.show').forEach(function (b) {
+      if (!b.value.trim()) { var fs = b.closest('fieldset'); fs.classList.add('missing'); firstBad = firstBad || fs; }
+    });
+    var msg = document.getElementById('msg');
+    if (firstBad) {
+      msg.textContent = 'Please answer the highlighted questions.';
+      firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    msg.textContent = '';
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true; btn.textContent = 'Submitting…';
+    // Build one row for the database
+    var row = {};
+    form.querySelectorAll('input[type=radio]:checked').forEach(function (r) {
+      row[r.name] = r.closest('.lrow') ? parseInt(r.value, 10) : r.value;
+    });
+    form.querySelectorAll('input[type=checkbox]').forEach(function (c) { row[c.name] = c.checked ? 1 : 0; });
+    form.querySelectorAll('input.other, textarea').forEach(function (t) {
+      var v = t.value.trim(); row[t.name] = v === '' ? null : v;
+    });
+    if (form.website.value) { return; } // spam trap
+
+    var headers = { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' };
+    if (SUPABASE_KEY.indexOf('eyJ') === 0) headers['Authorization'] = 'Bearer ' + SUPABASE_KEY;
+
+    fetch(SUPABASE_URL.replace(/\/$/, '') + '/rest/v1/responses', {
+      method: 'POST', headers: headers, body: JSON.stringify(row)
+    })
+      .then(function (r) {
+        if (!r.ok) return r.text().then(function (t) { throw new Error('error ' + r.status + (t ? ': ' + t.slice(0, 200) : '')); });
+        form.hidden = true;
+        document.querySelector('.progress').hidden = true;
+        document.getElementById('thanks').hidden = false;
+        window.scrollTo(0, 0);
+      })
+      .catch(function (err) {
+        msg.textContent = 'Sorry, your response could not be saved (' + err.message + '). Please try again.';
+        btn.disabled = false; btn.textContent = 'Submit Response';
+      });
+  });
+  updateBar();
+})();
+</script>
+</body>
+</html>
