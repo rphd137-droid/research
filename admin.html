@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Questionnaire Admin</title>
+<style>
+:root { --p:#1f4e8c; --ink:#1d2433; --muted:#5b6475; --line:#dfe3ea; --bg:#f3f5f8; --soft:#e8eef8; --err:#b3261e; --ok:#1e7a4f; --warn:#8a5a00; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--ink); background:var(--bg); line-height:1.45; font-size:15px; }
+a { color:var(--p); }
+.wrap { max-width:1000px; margin:0 auto; padding:14px; }
+.card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:14px; }
+h1 { font-size:1.2rem; margin:0; }
+h2 { font-size:1.05rem; margin:0 0 10px; }
+h3 { font-size:.95rem; margin:14px 0 6px; }
+.muted { color:var(--muted); font-size:.88rem; }
+.row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.grow { flex:1; min-width:160px; }
+.top { background:#1d2433; color:#fff; }
+.top .wrap { display:flex; align-items:center; gap:10px; padding-top:10px; padding-bottom:10px; }
+.top .who { margin-left:auto; font-size:.85rem; opacity:.85; }
+button, .btn { font:inherit; border:1px solid var(--line); background:#fff; color:var(--ink); border-radius:8px; padding:8px 12px; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:6px; white-space:nowrap; }
+button.primary, .btn.primary { background:var(--p); border-color:var(--p); color:#fff; font-weight:600; }
+button.danger { color:var(--err); border-color:#efc2bf; }
+button.small { padding:4px 8px; font-size:.82rem; }
+button:disabled { opacity:.55; cursor:not-allowed; }
+.top button { background:transparent; color:#fff; border-color:#4b5567; }
+input[type=text], input[type=email], input[type=password], input[type=number], input[type=url], input[type=datetime-local], select, textarea {
+  width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:8px; font:inherit; background:#fff; color:var(--ink); }
+textarea { resize:vertical; }
+label.f { display:block; font-weight:600; font-size:.86rem; margin:10px 0 4px; }
+.chk { display:flex; align-items:center; gap:8px; margin:6px 0; cursor:pointer; }
+.chk input { width:17px; height:17px; accent-color:var(--p); }
+.chip { font-size:.75rem; font-weight:700; padding:3px 8px; border-radius:99px; text-transform:uppercase; letter-spacing:.03em; }
+.chip.draft { background:#eceff3; color:#4b5567; }
+.chip.published { background:#ddf3e6; color:var(--ok); }
+.chip.closed { background:#fde7e5; color:var(--err); }
+.tabs { display:flex; gap:4px; border-bottom:1px solid var(--line); margin:10px 0 14px; overflow-x:auto; }
+.tabs button { border:0; border-bottom:3px solid transparent; border-radius:0; background:transparent; padding:10px 12px; font-weight:600; color:var(--muted); }
+.tabs button.on { color:var(--p); border-bottom-color:var(--p); }
+.sticky { position:sticky; top:0; z-index:20; background:var(--bg); padding:8px 0; }
+.dirty { color:var(--warn); font-size:.85rem; font-weight:600; }
+.banner { background:#fff4ce; border:1px solid #f0d77a; color:#5c4400; padding:10px 12px; border-radius:8px; margin-bottom:12px; font-size:.9rem; }
+.ok-banner { background:#ddf3e6; border:1px solid #a9dcbf; color:#14543a; padding:10px 12px; border-radius:8px; margin-bottom:12px; font-size:.9rem; }
+.list-item { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+.list-item .t { font-weight:700; }
+.sec { border-left:4px solid var(--p); }
+details.q { border:1px solid var(--line); border-radius:10px; margin:10px 0; background:#fbfcfe; }
+details.q > summary { list-style:none; cursor:pointer; padding:10px 12px; display:flex; gap:8px; align-items:center; }
+details.q > summary::-webkit-details-marker { display:none; }
+details.q > summary .qt { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+details.q > summary .typ { font-size:.72rem; color:var(--muted); background:#eceff3; padding:2px 6px; border-radius:6px; white-space:nowrap; }
+details.q .body { padding:0 12px 12px; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:0 14px; }
+table { border-collapse:collapse; width:100%; font-size:.88rem; }
+th, td { border-bottom:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
+th { background:var(--soft); font-weight:600; }
+td.num, th.num { text-align:right; white-space:nowrap; }
+.scroll { overflow-x:auto; }
+.barcell { min-width:120px; }
+.bar { height:10px; background:var(--p); border-radius:4px; }
+.stat { display:inline-block; min-width:120px; margin:4px 16px 4px 0; }
+.stat b { display:block; font-size:1.4rem; }
+.preview-box { border:1px solid var(--line); border-radius:12px; padding:14px; }
+.swatches { display:flex; gap:8px; flex-wrap:wrap; }
+.swatch { display:flex; align-items:center; gap:6px; border:1px solid var(--line); background:#fff; border-radius:8px; padding:6px 10px; cursor:pointer; font-size:.85rem; }
+.swatch i { width:16px; height:16px; border-radius:50%; display:inline-block; }
+input[type=color] { width:48px; height:36px; padding:2px; border:1px solid var(--line); border-radius:8px; background:#fff; }
+.modal { position:fixed; inset:0; background:rgba(15,23,42,.55); display:flex; align-items:flex-start; justify-content:center; padding:20px 10px; z-index:50; overflow:auto; }
+.modal .card { max-width:720px; width:100%; }
+.center { text-align:center; }
+.login { max-width:380px; margin:8vh auto; }
+#toast { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:#1d2433; color:#fff; padding:10px 16px; border-radius:8px; font-size:.9rem; z-index:60; display:none; max-width:90vw; }
+#printArea { display:none; }
+@media (max-width:640px) { .grid2 { grid-template-columns:1fr; } .wrap { padding:10px; } }
+@media print {
+  body { background:#fff; font-size:11pt; }
+  body > *:not(#printArea) { display:none !important; }
+  #printArea { display:block; width:100%; color:#000; font-family:Calibri, Arial, sans-serif; }
+  #printArea table { width:100%; }
+  #printArea h1 { font-size:18pt; color:#1f3b63; margin:0 0 6pt; }
+  #printArea h2 { font-size:13.5pt; color:#1f3b63; margin:16pt 0 6pt; break-after:avoid; }
+  #printArea h3 { font-size:11.5pt; margin:12pt 0 4pt; break-after:avoid; }
+  #printArea table { margin-bottom:8pt; break-inside:auto; }
+  #printArea tr { break-inside:avoid; }
+  #printArea th { background:#e8eef8 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  #printArea th, #printArea td { border:1px solid #b8c2d1; padding:3pt 5pt; font-size:9.5pt; }
+  @page { size:A4; margin:16mm; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="printArea"></div>
+<div id="toast"></div>
+<script src="common.js"></script>
+<script src="templates.js"></script>
+<script>
+(function () {
+var root = document.getElementById('root');
+var state = { surveys: [], counts: {}, cur: null, saved: null, tab: 'questions', subs: null, groupBy: '', openQ: new WeakSet(), dirty: false };
+
+function toast(t) { var el = document.getElementById('toast'); el.textContent = t; el.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(function () { el.style.display = 'none'; }, 3200); }
+function $(sel, el) { return (el || root).querySelector(sel); }
+function $$(sel, el) { return Array.from((el || root).querySelectorAll(sel)); }
+function surveyLink(s) { return new URL('index.html?s=' + encodeURIComponent(s.slug), location.href).href; }
+function chip(st) { return '<span class="chip ' + st + '">' + st + '</span>'; }
+function fileBase(s) { return (s.slug || 'questionnaire') + '-' + new Date().toISOString().slice(0, 10); }
+
+/* =============== LOGIN =============== */
+function showLogin(note) {
+  root.innerHTML = '<div class="wrap"><div class="card login"><h2 class="center">Questionnaire Admin</h2>' +
+    (note ? '<div class="banner">' + esc(note) + '</div>' : '') +
+    '<form id="lf"><label class="f">Email</label><input type="email" id="le" autocomplete="username" required>' +
+    '<label class="f">Password</label><input type="password" id="lp" autocomplete="current-password" required>' +
+    '<p><button class="primary" style="width:100%;justify-content:center">Log in</button></p><div id="lmsg" class="muted"></div></form>' +
+    '<p class="center"><a href="#" id="forgot">Forgot password?</a></p></div></div>';
+  $('#lf').onsubmit = async function (e) {
+    e.preventDefault(); $('#lmsg').textContent = 'Logging in…';
+    try { await SB.login($('#le').value.trim(), $('#lp').value); boot(); }
+    catch (err) { $('#lmsg').innerHTML = '<span style="color:var(--err)">' + esc(err.message) + '</span>'; }
+  };
+  $('#forgot').onclick = async function (e) {
+    e.preventDefault();
+    var em = $('#le').value.trim();
+    if (!em) { $('#lmsg').textContent = 'Type your email above first, then click "Forgot password?"'; return; }
+    try { await SB.recover(em, location.href.split('#')[0]); $('#lmsg').textContent = 'If this email has an account, a reset link has been sent to it.'; }
+    catch (err) { $('#lmsg').textContent = err.message; }
+  };
+}
+function showSetPassword(token) {
+  root.innerHTML = '<div class="wrap"><div class="card login"><h2 class="center">Set a new password</h2><form id="pf">' +
+    '<label class="f">New password (at least 8 characters)</label><input type="password" id="np" minlength="8" required autocomplete="new-password">' +
+    '<p><button class="primary" style="width:100%;justify-content:center">Save password</button></p><div id="pmsg" class="muted"></div></form></div></div>';
+  $('#pf').onsubmit = async function (e) {
+    e.preventDefault();
+    try { await SB.setPassword(token, $('#np').value); history.replaceState(null, '', location.pathname); showLogin('Password changed. Please log in.'); }
+    catch (err) { $('#pmsg').textContent = err.message; }
+  };
+}
+
+/* =============== LIST =============== */
+async function loadList() {
+  var r = await SB.rest('GET', 'surveys?select=id,slug,title,status,updated_at,close_at,max_responses&order=updated_at.desc');
+  state.surveys = r.data || [];
+  await Promise.all(state.surveys.map(async function (s) { state.counts[s.id] = await countFor(s.id); }));
+}
+async function countFor(id) {
+  try {
+    var r = await SB.rest('GET', 'submissions?select=id&survey_id=eq.' + id + '&limit=1', undefined, { prefer: 'count=exact' });
+    var cr = r.headers.get('content-range') || ''; var n = parseInt(cr.split('/')[1], 10);
+    return isNaN(n) ? (r.data || []).length : n;
+  } catch (e) { return 0; }
+}
+function shell(inner) {
+  root.innerHTML = '<div class="top"><div class="wrap"><h1>Questionnaire Admin</h1><span class="who">' + esc((SB.session && SB.session.email) || '') + '</span><button id="logout" class="small">Log out</button></div></div><div class="wrap">' + inner + '</div>';
+  $('#logout').onclick = async function () { if (state.dirty && !confirm('You have unsaved changes. Log out anyway?')) return; await SB.logout(); state.dirty = false; showLogin(); };
+}
+async function showList() {
+  if (state.dirty && !confirm('You have unsaved changes. Leave without saving?')) return;
+  state.cur = null; state.dirty = false; state.subs = null;
+  shell('<div class="card center muted">Loading…</div>');
+  try { await loadList(); } catch (e) { return handleErr(e); }
+  var h = '<div class="card"><div class="row"><h2 class="grow" style="margin:0">Your questionnaires</h2>' +
+    '<select id="tpl" style="width:auto">' + TEMPLATES.map(function (t, i) { return '<option value="' + i + '">' + esc(t.name) + '</option>'; }).join('') + '</select>' +
+    '<button class="primary" id="newBtn">+ New questionnaire</button></div><p class="muted">Choose "Blank" to build from scratch, or a template to start from a ready questionnaire.</p></div>';
+  if (!state.surveys.length) h += '<div class="card center muted">No questionnaires yet. Create your first one above.</div>';
+  state.surveys.forEach(function (s) {
+    h += '<div class="card list-item"><div class="grow"><div class="t">' + esc(s.title) + '</div><div class="muted">' + chip(s.status) + ' &nbsp;' +
+      (state.counts[s.id] || 0) + ' responses · updated ' + esc(fmtDate(s.updated_at)) + '</div></div>' +
+      '<button data-open="' + s.id + '" class="primary">Open</button><button data-res="' + s.id + '">Results</button><button data-dup="' + s.id + '">Duplicate</button><button class="danger" data-del="' + s.id + '">Delete</button></div>';
+  });
+  shell(h);
+  $('#newBtn').onclick = function () { createFromTemplate(TEMPLATES[$('#tpl').value]); };
+  $$('[data-open]').forEach(function (b) { b.onclick = function () { openSurvey(b.dataset.open, 'questions'); }; });
+  $$('[data-res]').forEach(function (b) { b.onclick = function () { openSurvey(b.dataset.res, 'results'); }; });
+  $$('[data-dup]').forEach(function (b) { b.onclick = function () { duplicate(b.dataset.dup); }; });
+  $$('[data-del]').forEach(function (b) { b.onclick = function () { removeSurvey(b.dataset.del); }; });
+}
+function uniqueSlug(base) {
+  base = (base || 'questionnaire').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48) || 'questionnaire';
+  if (base.length < 2) base += '-1';
+  var taken = state.surveys.map(function (s) { return s.slug; }), s = base, i = 2;
+  while (taken.indexOf(s) >= 0) s = base.slice(0, 55) + '-' + i++;
+  return s;
+}
+async function createFromTemplate(t) {
+  var row = { title: t.title, slug: uniqueSlug(t.slug || t.title), status: 'draft', questions: clone(t.questions), settings: deepMerge(defaultSettings(), t.settings || {}) };
+  try { var r = await SB.rest('POST', 'surveys', row, { prefer: 'return=representation' }); openSurvey(r.data[0].id, 'questions'); }
+  catch (e) { handleErr(e); }
+}
+async function duplicate(id) {
+  try {
+    var s = (await SB.rest('GET', 'surveys?select=*&id=eq.' + id)).data[0];
+    var row = { title: 'Copy of ' + s.title, slug: uniqueSlug(s.slug + '-copy'), status: 'draft', questions: s.questions, settings: s.settings, close_at: null, max_responses: s.max_responses };
+    await SB.rest('POST', 'surveys', row, { prefer: 'return=minimal' });
+    toast('Copy created (as Draft). Its responses start empty.'); showList();
+  } catch (e) { handleErr(e); }
+}
+async function removeSurvey(id) {
+  var s = state.surveys.filter(function (x) { return x.id === id; })[0], n = state.counts[id] || 0;
+  if (!confirm('Delete "' + s.title + '"' + (n ? ' and ALL its ' + n + ' responses' : '') + '? This cannot be undone.' + (n ? '\n\nTip: download the results first.' : ''))) return;
+  try { await SB.rest('DELETE', 'surveys?id=eq.' + id); toast('Deleted.'); showList(); } catch (e) { handleErr(e); }
+}
+
+/* =============== EDITOR SHELL =============== */
+async function openSurvey(id, tab) {
+  shell('<div class="card center muted">Loading…</div>');
+  try {
+    var s = (await SB.rest('GET', 'surveys?select=*&id=eq.' + id)).data[0];
+    if (!s) return showList();
+    s.settings = fullSettings(s.settings);
+    s.questions = s.questions && s.questions.sections ? s.questions : { sections: [] };
+    state.cur = s; state.saved = JSON.stringify(s); state.dirty = false; state.subs = null;
+    state.counts[id] = await countFor(id);
+    state.tab = tab || 'questions';
+    renderEditor();
+  } catch (e) { handleErr(e); }
+}
+function markDirty() {
+  state.dirty = JSON.stringify(state.cur) !== state.saved;
+  var d = $('#dirty'); if (d) d.textContent = state.dirty ? '● Unsaved changes' : '';
+  var b = $('#saveBtn'); if (b) b.disabled = !state.dirty;
+}
+function renderEditor() {
+  var s = state.cur, n = state.counts[s.id] || 0;
+  shell('<div class="sticky"><div class="row"><button id="back">← All questionnaires</button><span class="grow"></span><span id="dirty" class="dirty"></span>' +
+    '<button id="saveBtn" class="primary">Save</button></div></div>' +
+    '<div class="row"><h2 class="grow" style="margin:6px 0 0">' + esc(s.title) + '</h2>' + chip(s.status) + '<span class="muted" id="hdrCount">' + n + ' responses</span></div>' +
+    '<div class="tabs">' + [['questions', 'Questions'], ['settings', 'Settings & Design'], ['share', 'Publish & Share'], ['results', 'Results']].map(function (t) {
+      return '<button data-tab="' + t[0] + '" class="' + (state.tab === t[0] ? 'on' : '') + '">' + t[1] + '</button>';
+    }).join('') + '</div><div id="pane"></div>');
+  $('#back').onclick = showList;
+  $('#saveBtn').onclick = save;
+  $$('[data-tab]').forEach(function (b) { b.onclick = function () { state.tab = b.dataset.tab; renderEditor(); }; });
+  ({ questions: renderBuilder, settings: renderSettings, share: renderShare, results: renderResults })[state.tab]();
+  markDirty();
+}
+async function save() {
+  var s = state.cur;
+  var errs = validateQuestions(s.questions);
+  if (!s.title.trim()) errs.unshift('Title is empty (Settings & Design tab).');
+  if (!/^[a-z0-9][a-z0-9-]{1,60}$/.test(s.slug)) errs.unshift('Link name must be 2–61 characters: small letters, numbers and - only (Settings & Design tab).');
+  if (errs.length) { alert('Please fix these before saving:\n\n• ' + errs.slice(0, 12).join('\n• ')); return false; }
+  try {
+    var body = { title: s.title.trim(), slug: s.slug, status: s.status, questions: s.questions, settings: s.settings, close_at: s.close_at || null, max_responses: s.max_responses || null };
+    var r = await SB.rest('PATCH', 'surveys?id=eq.' + s.id, body, { prefer: 'return=representation' });
+    var fresh = r.data[0]; fresh.settings = fullSettings(fresh.settings);
+    state.cur = fresh; state.saved = JSON.stringify(fresh); markDirty();
+    toast('Saved ✓'); renderEditor(); return true;
+  } catch (e) {
+    if (/duplicate key|surveys_slug_key/i.test(e.message)) alert('That link name is already used by another questionnaire. Please choose a different one.');
+    else handleErr(e);
+    return false;
+  }
+}
+window.addEventListener('beforeunload', function (e) { if (state.dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+/* =============== QUESTIONS BUILDER =============== */
+function allCodes() {
+  var c = {}; allItems(state.cur.questions).forEach(function (q) { c[(q.code || '').toLowerCase()] = 1; (q.statements || []).forEach(function (st) { c[(st.code || '').toLowerCase()] = 1; }); });
+  return c;
+}
+function newCode(base) { var c = allCodes(), i = 1; base = base || 'q'; while (c[(base + i).toLowerCase()]) i++; return base + i; }
+function newQuestion(type) {
+  var q = { type: type || 'single', code: newCode('q'), text: '', required: true };
+  if (q.type === 'single') { q.options = ['Option 1', 'Option 2']; q.other = false; }
+  return q;
+}
+function scaleText(q) { return scaleOf(q).map(function (x) { return x.value + ' = ' + x.label; }).join('\n'); }
+function presetOf(q) {
+  if (q.scalePreset === 'custom') return 'custom';
+  var cur = JSON.stringify(scaleOf(q).map(function (x) { return [x.value, x.label]; }));
+  var k = Object.keys(SCALE_PRESETS).filter(function (k) { return JSON.stringify(SCALE_PRESETS[k].scale) === cur; })[0];
+  return k || 'custom';
+}
+function renderBuilder() {
+  var Q = state.cur.questions, locked = (state.counts[state.cur.id] || 0) > 0;
+  var nums = numbering(Q, true), h = '';
+  if (locked) h += '<div class="banner"><b>This questionnaire already has responses.</b> You can fix wording, but adding, removing or re-ordering questions can make old answers not match. For a new version, go back and use <b>Duplicate</b>. Codes are locked.</div>';
+  (Q.sections || []).forEach(function (sec, si) {
+    h += '<div class="card sec"><div class="row"><b class="grow">Section ' + (si + 1) + '</b>' +
+      '<button class="small" data-act="secUp" data-si="' + si + '">↑</button><button class="small" data-act="secDown" data-si="' + si + '">↓</button><button class="small danger" data-act="secDel" data-si="' + si + '">Delete section</button></div>' +
+      '<label class="f">Section title</label><input type="text" data-si="' + si + '" data-f="sec.title" value="' + esc(sec.title) + '">' +
+      '<label class="f">Section instructions (optional)</label><textarea rows="2" data-si="' + si + '" data-f="sec.description">' + esc(sec.description || '') + '</textarea>';
+    (sec.items || []).forEach(function (q, qi) { h += questionEditor(q, si, qi, nums, locked); });
+    h += '<div class="row" style="margin-top:10px"><select data-newtype="' + si + '" style="width:auto">' + Object.keys(QUESTION_TYPES).map(function (k) { return '<option value="' + k + '">' + QUESTION_TYPES[k] + '</option>'; }).join('') + '</select><button data-act="addQ" data-si="' + si + '">+ Add question</button></div></div>';
+  });
+  h += '<button data-act="addSec">+ Add section</button>';
+  $('#pane').innerHTML = h;
+  wireBuilder();
+}
+function questionEditor(q, si, qi, nums, locked) {
+  var a = 'data-si="' + si + '" data-qi="' + qi + '"', isChoice = ['single', 'multi', 'dropdown'].indexOf(q.type) >= 0;
+  var label = q.type === 'likert'
+    ? (nums[(q.statements || [])[0] && q.statements[0].code] ? 'Q' + nums[q.statements[0].code] + '–' + nums[q.statements[q.statements.length - 1].code] : 'Scale')
+    : 'Q' + (nums[q.code] || '?');
+  var h = '<details class="q" ' + (state.openQ.has(q) ? 'open' : '') + ' ' + a + '><summary><b>' + label + '</b><span class="qt">' + esc(q.text || (q.type === 'likert' ? (q.dimension || 'Rating scale') : '(no text yet)')) + '</span><span class="typ">' + esc(QUESTION_TYPES[q.type].split(' (')[0]) + '</span></summary><div class="body">';
+  h += '<div class="grid2"><div><label class="f">Question type</label><select ' + a + ' data-f="type">' + Object.keys(QUESTION_TYPES).map(function (k) { return '<option value="' + k + '"' + (k === q.type ? ' selected' : '') + '>' + QUESTION_TYPES[k] + '</option>'; }).join('') + '</select></div>' +
+    '<div><label class="f">Code (column name in Excel/SPSS)</label><input type="text" ' + a + ' data-f="code" value="' + esc(q.code) + '"' + (locked ? ' disabled' : '') + '></div></div>';
+  h += '<label class="f">' + (q.type === 'likert' ? 'Heading above the statements (optional, e.g. "C1. Service Quality")' : 'Question') + '</label><textarea rows="2" ' + a + ' data-f="text">' + esc(q.text || '') + '</textarea>';
+  h += '<label class="f">Help text under the question (optional)</label><input type="text" ' + a + ' data-f="help" value="' + esc(q.help || '') + '">';
+  h += '<label class="chk"><input type="checkbox" ' + a + ' data-f="required"' + (q.required ? ' checked' : '') + '> Required (must be answered)</label>';
+  if (isChoice) {
+    h += '<label class="f">Options – one per line</label><textarea rows="' + Math.max(3, (q.options || []).length + 1) + '" ' + a + ' data-f="options">' + esc((q.options || []).join('\n')) + '</textarea>' +
+      '<label class="chk"><input type="checkbox" ' + a + ' data-f="other"' + (q.other ? ' checked' : '') + '> Add "Other (please specify)"</label>';
+  }
+  if (q.type === 'likert') {
+    var p = presetOf(q);
+    h += '<div class="grid2"><div><label class="f">Dimension / variable name (for mean scores)</label><input type="text" ' + a + ' data-f="dimension" value="' + esc(q.dimension || '') + '" placeholder="e.g. Service Quality"></div>' +
+      '<div><label class="f">Rating scale</label><select ' + a + ' data-f="scalePreset">' + Object.keys(SCALE_PRESETS).map(function (k) { return '<option value="' + k + '"' + (k === p ? ' selected' : '') + '>' + SCALE_PRESETS[k].label + '</option>'; }).join('') + '<option value="custom"' + (p === 'custom' ? ' selected' : '') + '>Custom scale…</option></select></div></div>';
+    if (p === 'custom') h += '<label class="f">Custom scale – one per line as "value = label"</label><textarea rows="5" ' + a + ' data-f="scaleText">' + esc(scaleText(q)) + '</textarea>';
+    h += '<label class="f">Statements – one per line (each one is rated on the scale)</label><textarea rows="' + Math.max(4, (q.statements || []).length + 1) + '" ' + a + ' data-f="statements">' + esc((q.statements || []).map(function (s) { return s.text; }).join('\n')) + '</textarea>' +
+      '<div class="muted codes">Codes: ' + esc((q.statements || []).map(function (s) { return s.code; }).join(', ') || '–') + '</div>';
+  }
+  h += '<div class="row" style="margin-top:10px"><button class="small" data-act="qUp" ' + a + '>↑ Up</button><button class="small" data-act="qDown" ' + a + '>↓ Down</button><button class="small" data-act="qDup" ' + a + '>Duplicate</button><button class="small danger" data-act="qDel" ' + a + '>Delete</button></div>';
+  return h + '</div></details>';
+}
+function wireBuilder() {
+  var pane = $('#pane');
+  $$('details.q', pane).forEach(function (d) {
+    d.addEventListener('toggle', function () { var q = state.cur.questions.sections[d.dataset.si].items[d.dataset.qi]; if (d.open) state.openQ.add(q); else state.openQ.delete(q); });
+  });
+  if (pane._wired) return;   // attach the handlers below only once
+  pane._wired = true;
+  var Q = { get sections() { return state.cur.questions.sections; } };
+  function onEdit(e) {
+    var el = e.target, f = el.dataset.f; if (!f) return;
+    var si = +el.dataset.si, sec = Q.sections[si];
+    if (f === 'sec.title' || f === 'sec.description') { sec[f.split('.')[1]] = el.value; return markDirty(); }
+    var q = sec.items[+el.dataset.qi], rerender = false;
+    if (f === 'required' || f === 'other') { q[f] = el.checked; }
+    else if (f === 'options') { q.options = el.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean); }
+    else if (f === 'statements') {
+      var lines = el.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean), old = q.statements || [];
+      var used = allCodes(); old.forEach(function (s) { delete used[s.code.toLowerCase()]; });
+      q.statements = lines.map(function (t, i) {
+        if (old[i]) { used[old[i].code.toLowerCase()] = 1; return { code: old[i].code, text: t }; }
+        var k = i + 1, base = (q.code || 'item') + '_'; while (used[(base + k).toLowerCase()]) k++; used[(base + k).toLowerCase()] = 1;
+        return { code: base + k, text: t };
+      });
+      var codesEl = el.closest('details').querySelector('.codes'); if (codesEl) codesEl.textContent = 'Codes: ' + q.statements.map(function (s) { return s.code; }).join(', ');
+    }
+    else if (f === 'scalePreset') { q.scalePreset = el.value; if (el.value !== 'custom') q.scale = clone(SCALE_PRESETS[el.value].scale); else q.scale = scaleOf(q).map(function (x) { return [x.value, x.label]; }); rerender = true; }
+    else if (f === 'scaleText') {
+      var sc = el.value.split('\n').map(function (l) { var m = /^\s*(-?\d+)\s*[=:\-]\s*(.+)$/.exec(l); return m ? [Number(m[1]), m[2].trim()] : null; }).filter(Boolean);
+      if (sc.length >= 2) q.scale = sc;
+    }
+    else if (f === 'type') {
+      q.type = el.value;
+      if (['single', 'multi', 'dropdown'].indexOf(q.type) >= 0 && !(q.options || []).length) q.options = ['Option 1', 'Option 2'];
+      if (q.type === 'likert') { q.statements = q.statements || []; q.scale = q.scale || clone(SCALE_PRESETS.agree5.scale); q.dimension = q.dimension || ''; }
+      state.openQ.add(q); rerender = true;
+    }
+    else { q[f] = el.value; if (f === 'text' || f === 'dimension') { var sum = el.closest('details').querySelector('.qt'); if (sum) sum.textContent = el.value || '(no text yet)'; } }
+    markDirty();
+    if (rerender) renderBuilder();
+  }
+  pane.addEventListener('input', function (e) { if (e.target.type !== 'checkbox' && e.target.tagName !== 'SELECT') onEdit(e); });
+  pane.addEventListener('change', function (e) { if (e.target.type === 'checkbox' || e.target.tagName === 'SELECT') onEdit(e); });
+  pane.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]'); if (!b) return;
+    var act = b.dataset.act, si = +b.dataset.si, qi = +b.dataset.qi, S = Q.sections;
+    function swap(arr, i, j) { if (j < 0 || j >= arr.length) return; var t = arr[i]; arr[i] = arr[j]; arr[j] = t; }
+    if (act === 'addSec') S.push({ id: uid('s'), title: 'Section ' + (S.length + 1), description: '', items: [] });
+    if (act === 'secUp') swap(S, si, si - 1);
+    if (act === 'secDown') swap(S, si, si + 1);
+    if (act === 'secDel') { if (S[si].items.length && !confirm('Delete this section and its ' + S[si].items.length + ' question(s)?')) return; S.splice(si, 1); }
+    if (act === 'addQ') { var q = newQuestion($('[data-newtype="' + si + '"]').value); if (q.type === 'multi' || q.type === 'dropdown') { q.options = ['Option 1', 'Option 2']; q.other = false; } if (q.type === 'likert') { q.statements = []; q.scale = clone(SCALE_PRESETS.agree5.scale); q.dimension = ''; q.code = newCode('dim'); } state.openQ.add(q); S[si].items.push(q); }
+    if (act === 'qUp') { if (qi > 0) swap(S[si].items, qi, qi - 1); else if (si > 0) S[si - 1].items.push(S[si].items.shift()); }
+    if (act === 'qDown') { if (qi < S[si].items.length - 1) swap(S[si].items, qi, qi + 1); else if (si < S.length - 1) S[si + 1].items.unshift(S[si].items.pop()); }
+    if (act === 'qDel') { if (!confirm('Delete this question?')) return; S[si].items.splice(qi, 1); }
+    if (act === 'qDup') {
+      var c = clone(S[si].items[qi]); c.code = newCode((c.code || 'q').replace(/\d+$/, '') || 'q');
+      if (c.statements) { var used = allCodes(); used[c.code.toLowerCase()] = 1; c.statements = c.statements.map(function (st, i) { var k = i + 1; while (used[(c.code + '_' + k).toLowerCase()]) k++; used[(c.code + '_' + k).toLowerCase()] = 1; return { code: c.code + '_' + k, text: st.text }; }); }
+      state.openQ.add(c); S[si].items.splice(qi + 1, 0, c);
+    }
+    markDirty(); renderBuilder();
+  });
+}
+
+/* =============== SETTINGS & DESIGN =============== */
+function toLocalInput(iso) { if (!iso) return ''; var d = new Date(iso); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16); }
+function renderSettings() {
+  var s = state.cur, S = s.settings, T = S.theme;
+  function chk(path, label, val) { return '<label class="chk"><input type="checkbox" data-s="' + path + '"' + (val ? ' checked' : '') + '> ' + label + '</label>'; }
+  var h = '<div class="card"><h2>Basic details</h2>' +
+    '<label class="f">Title</label><input type="text" data-v="title" value="' + esc(s.title) + '">' +
+    '<label class="f">Link name (appears in the link: …/index.html?s=<b>' + esc(s.slug) + '</b>)</label><input type="text" data-v="slug" value="' + esc(s.slug) + '">' +
+    '<label class="f">Introduction / letter to respondent</label><textarea rows="7" data-s="texts.intro">' + esc(S.texts.intro) + '</textarea>' +
+    '<div class="grid2"><div><label class="f">Submit button text</label><input type="text" data-s="texts.submitLabel" value="' + esc(S.texts.submitLabel) + '"></div>' +
+    '<div><label class="f">Status</label><select data-v="status">' + ['draft', 'published', 'closed'].map(function (x) { return '<option value="' + x + '"' + (s.status === x ? ' selected' : '') + '>' + { draft: 'Draft (not visible to public)', published: 'Published (accepting answers)', closed: 'Closed (shows closed message)' }[x] + '</option>'; }).join('') + '</select></div></div>' +
+    '<label class="f">Thank-you message (shown after submitting)</label><textarea rows="3" data-s="texts.thankYou">' + esc(S.texts.thankYou) + '</textarea>' +
+    '<label class="f">Closed message</label><textarea rows="2" data-s="texts.closedMessage">' + esc(S.texts.closedMessage) + '</textarea></div>';
+
+  h += '<div class="card"><h2>How to collect responses</h2>' +
+    '<label class="chk"><input type="radio" name="mode" value="anonymous"' + (S.respondent.mode !== 'details' ? ' checked' : '') + '> <span><b>Anonymous</b> – only answers are collected, no personal details</span></label>' +
+    '<label class="chk"><input type="radio" name="mode" value="details"' + (S.respondent.mode === 'details' ? ' checked' : '') + '> <span><b>Collect respondent details</b> – choose which details to ask</span></label>' +
+    '<div id="respBox" style="' + (S.respondent.mode === 'details' ? '' : 'display:none') + '"><label class="f">Heading for this part</label><input type="text" data-s="respondent.heading" value="' + esc(S.respondent.heading) + '">' +
+    '<div class="scroll"><table style="margin-top:10px"><tr><th>Detail</th><th>Ask</th><th>Required</th></tr>' + RESPONDENT_FIELDS.map(function (f) {
+      var v = S.respondent.fields[f.key];
+      return '<tr><td>' + esc(f.label) + '</td><td><input type="checkbox" data-s="respondent.fields.' + f.key + '.on"' + (v.on ? ' checked' : '') + '></td><td><input type="checkbox" data-s="respondent.fields.' + f.key + '.required"' + (v.required ? ' checked' : '') + '></td></tr>';
+    }).join('') + '</table></div></div>' +
+    '<h3>Consent</h3>' + chk('consent.on', 'Respondent must tick a consent statement before submitting', S.consent.on) +
+    '<textarea rows="2" data-s="consent.text">' + esc(S.consent.text) + '</textarea>' +
+    '<h3>Rules</h3>' + chk('rules.oneResponsePerDevice', 'Allow only one response per phone/computer (stops accidental double submissions)', S.rules.oneResponsePerDevice) +
+    chk('rules.showProgress', 'Show progress bar', S.rules.showProgress) + chk('rules.numberQuestions', 'Number the questions automatically (1, 2, 3…)', S.rules.numberQuestions) +
+    '<div class="grid2"><div><label class="f">Stop accepting answers after (optional)</label><input type="datetime-local" data-v="close_at" value="' + toLocalInput(s.close_at) + '"></div>' +
+    '<div><label class="f">Maximum number of responses (optional)</label><input type="number" min="1" data-v="max_responses" value="' + (s.max_responses || '') + '" placeholder="No limit"></div></div></div>';
+
+  h += '<div class="card"><h2>Design – colours, fonts, text size</h2><label class="f">Quick themes</label><div class="swatches">' + Object.keys(THEME_PRESETS).map(function (k) {
+    var p = THEME_PRESETS[k]; return '<button class="swatch" data-preset="' + k + '"><i style="background:' + p.primary + ';box-shadow:inset 0 0 0 3px ' + p.background + '"></i>' + esc(p.label) + '</button>';
+  }).join('') + '</div><div class="grid2"><div>' +
+    [['primary', 'Main colour (buttons, headings)'], ['background', 'Page background'], ['card', 'Card / box colour'], ['text', 'Text colour']].map(function (c) {
+      return '<label class="f">' + c[1] + '</label><div class="row"><input type="color" data-s="theme.' + c[0] + '" value="' + esc(T[c[0]]) + '"><input type="text" data-s="theme.' + c[0] + '" value="' + esc(T[c[0]]) + '" style="width:110px"></div>';
+    }).join('') + '</div><div>' +
+    '<label class="f">Font</label><select data-s="theme.font">' + Object.keys(FONTS).map(function (k) { return '<option value="' + k + '"' + (T.font === k ? ' selected' : '') + '>' + esc(FONTS[k].label) + '</option>'; }).join('') + '</select>' +
+    '<label class="f">Text size: <span id="fsv">' + T.fontSize + '</span>px</label><input type="range" min="13" max="22" data-s="theme.fontSize" value="' + T.fontSize + '" style="width:100%">' +
+    '<label class="f">Rounded corners: <span id="rv">' + T.radius + '</span>px</label><input type="range" min="0" max="24" data-s="theme.radius" value="' + T.radius + '" style="width:100%">' +
+    '</div></div><label class="f">Preview</label><div class="preview-box" id="pv"></div></div>';
+  $('#pane').innerHTML = h;
+  drawPreview();
+
+  var pane = $('#pane');
+  $$('[data-preset]', pane).forEach(function (b) {
+    b.onclick = function () { var p = THEME_PRESETS[b.dataset.preset]; ['primary', 'background', 'card', 'text'].forEach(function (k) { S.theme[k] = p[k]; }); S.theme.preset = b.dataset.preset; markDirty(); renderSettings(); };
+  });
+  if (pane._wired) return;
+  pane._wired = true;
+  function setPath(path, val) { var parts = path.split('.'), o = S; parts.slice(0, -1).forEach(function (p) { o = o[p]; }); o[parts[parts.length - 1]] = val; }
+  function onChange(e) {
+    var el = e.target;
+    if (el.name === 'mode') { S.respondent.mode = el.value; $('#respBox').style.display = el.value === 'details' ? '' : 'none'; return markDirty(); }
+    if (el.dataset.v) {
+      var k = el.dataset.v, v = el.value;
+      if (k === 'slug') v = v.toLowerCase().replace(/\s+/g, '-');
+      if (k === 'close_at') v = v ? new Date(v).toISOString() : null;
+      if (k === 'max_responses') v = v ? Math.max(1, parseInt(v, 10)) : null;
+      s[k] = v; return markDirty();
+    }
+    var path = el.dataset.s; if (!path) return;
+    var val = el.type === 'checkbox' ? el.checked : el.type === 'range' ? Number(el.value) : el.value;
+    if (/^theme\.(primary|background|card|text)$/.test(path)) {
+      if (!/^#[0-9a-f]{6}$/i.test(val)) return;
+      $$('[data-s="' + path + '"]', pane).forEach(function (o) { if (o !== el) o.value = val; });
+      S.theme.preset = 'custom';
+    }
+    if (path === 'respondent.fields.' + path.split('.')[2] + '.required' && val) { setPath(path.replace('.required', '.on'), true); var on = $('[data-s="' + path.replace('.required', '.on') + '"]'); if (on) on.checked = true; }
+    setPath(path, val);
+    if (path === 'theme.fontSize') $('#fsv').textContent = val;
+    if (path === 'theme.radius') $('#rv').textContent = val;
+    if (/^theme\./.test(path)) drawPreview();
+    markDirty();
+  }
+  pane.addEventListener('input', onChange); pane.addEventListener('change', onChange);
+}
+function drawPreview() {
+  var el = $('#pv'), T = state.cur.settings.theme; if (!el) return;
+  applyTheme(el, T);
+  el.style.background = 'var(--bg)'; el.style.fontFamily = 'var(--font)'; el.style.fontSize = 'var(--size)'; el.style.color = 'var(--ink)';
+  var box = 'background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:10px';
+  var sc = SCALE_PRESETS.agree5.scale;
+  el.innerHTML = '<div style="' + box + ';border-top:5px solid var(--primary)"><div style="font-weight:700;text-align:center;font-size:1.15em">' + esc(state.cur.title) + '</div></div>' +
+    '<div style="' + box + '"><div style="color:var(--primary);font-weight:700;margin-bottom:6px">Section title</div><div style="font-weight:600;margin-bottom:6px"><span style="color:var(--primary)">1.</span> Sample question?</div>' +
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span style="border:1px solid var(--primary);background:var(--soft);border-radius:calc(var(--radius)*.7);padding:6px 10px">Selected</span><span style="border:1px solid var(--line);border-radius:calc(var(--radius)*.7);padding:6px 10px">Option</span></div>' +
+    '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">' + sc.map(function (x, i) { return '<span style="text-align:center;padding:6px 2px;border-radius:calc(var(--radius)*.7);border:1px solid ' + (i === 1 ? 'var(--primary);background:var(--primary);color:#fff' : 'var(--line)') + '"><b>' + x[0] + '</b></span>'; }).join('') + '</div></div>' +
+    '<div style="background:var(--primary);color:#fff;text-align:center;padding:10px;border-radius:var(--radius);font-weight:700">' + esc(state.cur.settings.texts.submitLabel) + '</div>';
+}
+
+/* =============== PUBLISH & SHARE =============== */
+function renderShare() {
+  var s = state.cur, link = surveyLink(s), n = state.counts[s.id] || 0;
+  var open = s.status === 'published' && (!s.close_at || new Date(s.close_at) > new Date()) && (!s.max_responses || n < s.max_responses);
+  var h = '<div class="card"><h2>Status</h2>' +
+    (state.dirty ? '<div class="banner">You have unsaved changes – click <b>Save</b> first so respondents see the latest version.</div>' : '') +
+    (open ? '<div class="ok-banner">✓ Live – accepting responses.</div>' :
+      s.status === 'draft' ? '<div class="banner">Draft – the public cannot open it yet.</div>' :
+      '<div class="banner">Not accepting responses (' + (s.status === 'closed' ? 'closed' : s.close_at && new Date(s.close_at) <= new Date() ? 'closing date has passed' : 'response limit reached') + ').</div>') +
+    '<div class="row">' + (s.status !== 'published' ? '<button class="primary" id="pub">Publish now</button>' : '<button id="unpub">Close (stop answers)</button>') + '<a class="btn" target="_blank" href="' + esc(link) + '&preview=1">Preview</a></div></div>';
+  h += '<div class="card"><h2>Link to share</h2><div class="row"><input type="text" readonly value="' + esc(link) + '" id="lnk" class="grow"><button id="copy">Copy</button><a class="btn" href="' + esc(link) + '" target="_blank">Open</a></div>' +
+    '<p class="muted">Send this link on WhatsApp, email or print the QR code on paper forms.</p>' +
+    '<h3>QR code</h3><img id="qr" alt="QR code" width="220" height="220" style="border:1px solid var(--line);border-radius:8px;background:#fff" src="https://api.qrserver.com/v1/create-qr-code/?size=440x440&margin=12&data=' + encodeURIComponent(link) + '">' +
+    '<p><a class="btn" target="_blank" href="https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&margin=20&format=png&data=' + encodeURIComponent(link) + '">Open large QR (to save/print)</a></p></div>';
+  $('#pane').innerHTML = h;
+  $('#copy').onclick = function () { var i = $('#lnk'); i.select(); (navigator.clipboard ? navigator.clipboard.writeText(i.value) : Promise.reject()).then(function () { toast('Link copied'); }, function () { document.execCommand('copy'); toast('Link copied'); }); };
+  var setStatus = async function (st) { state.cur.status = st; markDirty(); await save(); state.tab = 'share'; renderEditor(); };
+  if ($('#pub')) $('#pub').onclick = function () { setStatus('published'); };
+  if ($('#unpub')) $('#unpub').onclick = function () { if (confirm('Stop accepting responses?')) setStatus('closed'); };
+}
+
+/* =============== RESULTS =============== */
+async function loadSubs() {
+  var all = [], off = 0, page = 1000;
+  for (;;) {
+    var r = await SB.rest('GET', 'submissions?select=id,submitted_at,respondent,answers&survey_id=eq.' + state.cur.id + '&order=id.asc&limit=' + page + '&offset=' + off);
+    all = all.concat(r.data || []); if (!r.data || r.data.length < page) break; off += page;
+  }
+  state.subs = all; state.counts[state.cur.id] = all.length;
+}
+function pct(v) { return (Math.round(v * 10) / 10).toFixed(1) + '%'; }
+function f2(v) { return v == null ? '–' : Number(v).toFixed(2); }
+function groupables() { return allItems(state.cur.questions).filter(function (q) { return q.type === 'single' || q.type === 'dropdown'; }); }
+
+async function renderResults() {
+  var pane = $('#pane');
+  if (!state.subs) {
+    pane.innerHTML = '<div class="card center muted">Loading responses…</div>';
+    try { await loadSubs(); } catch (e) { return handleErr(e); }
+  }
+  if ($('#hdrCount')) $('#hdrCount').textContent = state.subs.length + ' responses';
+  var s = state.cur, subs = state.subs, sum = summarize(s, subs);
+  var dims = sum.items.filter(function (i) { return i.kind === 'likert'; });
+  var dates = subs.map(function (x) { return x.submitted_at; }).sort();
+  var h = '<div class="card"><div class="row"><div class="grow"><span class="stat"><b>' + subs.length + '</b>responses</span>' +
+    (dates.length ? '<span class="stat"><b style="font-size:1rem">' + esc(fmtDate(dates[0])) + '</b>first</span><span class="stat"><b style="font-size:1rem">' + esc(fmtDate(dates[dates.length - 1])) + '</b>latest</span>' : '') +
+    '</div><button id="refresh">↻ Refresh</button></div>' +
+    (state.dirty ? '<div class="banner">You have unsaved question changes; results use the saved version after you Save.</div>' : '') +
+    '<h3>Download results</h3><div class="row">' +
+    '<button class="primary" id="dlx">Excel (.xlsx)</button><button class="primary" id="dlw">Word report (.docx)</button><button class="primary" id="dlp">PDF report</button><button id="dlc">CSV</button></div>' +
+    '<p class="muted">Excel has 4 sheets: Responses (answers as text), Coded for SPSS (answers as numbers), Summary, and Codebook. PDF opens the print window – choose <b>Save as PDF</b>.</p>' +
+    '<label class="f">Compare results by (used in reports too)</label><select id="grp"><option value="">– No comparison –</option>' + groupables().map(function (q) { return '<option value="' + esc(q.code) + '"' + (state.groupBy === q.code ? ' selected' : '') + '>' + esc(q.text) + '</option>'; }).join('') + '</select></div>';
+
+  if (!subs.length) { pane.innerHTML = h + '<div class="card center muted">No responses yet. Share the link from the "Publish & Share" tab.</div>'; wireResults(); return; }
+
+  if (dims.length) {
+    h += '<div class="card"><h2>Dimension scores (mean of statements)</h2><div class="scroll"><table><tr><th>Dimension</th><th class="num">N</th><th class="num">Mean</th><th class="num">SD</th></tr>' +
+      dims.map(function (d) { return '<tr><td>' + esc(d.q.dimension || d.q.text || d.q.code) + '</td><td class="num">' + d.dimN + '</td><td class="num"><b>' + f2(d.dimMean) + '</b></td><td class="num">' + f2(d.dimSd) + '</td></tr>'; }).join('') + '</table></div></div>';
+  }
+  if (state.groupBy) {
+    var cmp = compareBy(s, subs, state.groupBy);
+    if (cmp && cmp.dims.length) {
+      h += '<div class="card"><h2>Comparison by: ' + esc(cmp.question.text) + '</h2><div class="scroll"><table><tr><th>Group</th><th class="num">N</th>' + cmp.dims.map(function (d) { return '<th class="num">' + esc(d) + '</th>'; }).join('') + '</tr>' +
+        cmp.groups.map(function (g) { return '<tr><td>' + esc(g.label) + '</td><td class="num">' + g.n + '</td>' + g.means.map(function (m) { return '<td class="num">' + f2(m.mean) + '</td>'; }).join('') + '</tr>'; }).join('') + '</table></div><p class="muted">Values are mean scores. Use the Excel "Coded for SPSS" sheet for t-tests / ANOVA.</p></div>';
+    }
+  }
+  h += '<div class="card"><h2>Question-wise results</h2>';
+  sum.items.forEach(function (it) {
+    var q = it.q, title = (it.num ? it.num + '. ' : '') + (q.text || q.dimension || q.code);
+    if (it.kind === 'choice') {
+      h += '<h3>' + esc(title) + ' <span class="muted">(' + it.answered + ' answered' + (q.type === 'multi' ? '; % of respondents' : '') + ')</span></h3><div class="scroll"><table><tr><th>Option</th><th class="num">Count</th><th class="num">%</th><th class="barcell"></th></tr>' +
+        it.rows.map(function (r) { return '<tr><td>' + esc(r.label) + '</td><td class="num">' + r.count + '</td><td class="num">' + pct(r.pct) + '</td><td class="barcell"><div class="bar" style="width:' + Math.max(1, r.pct) + '%"></div></td></tr>'; }).join('') + '</table></div>' +
+        (it.others.length ? '<div class="muted">Other answers: ' + it.others.slice(0, 30).map(esc).join('; ') + (it.others.length > 30 ? ' …' : '') + '</div>' : '');
+    } else if (it.kind === 'likert') {
+      h += '<h3>' + esc(q.text || q.dimension || 'Rating scale') + ' <span class="muted">– dimension mean ' + f2(it.dimMean) + '</span></h3><div class="scroll"><table><tr><th>No.</th><th>Statement</th><th class="num">N</th><th class="num">Mean</th><th class="num">SD</th>' +
+        it.scale.map(function (x) { return '<th class="num" title="' + esc(x.label) + '">' + x.value + '</th>'; }).join('') + '</tr>' +
+        it.rows.map(function (r) { return '<tr><td>' + (r.num || '') + '</td><td>' + esc(r.text) + '</td><td class="num">' + r.n + '</td><td class="num"><b>' + f2(r.mean) + '</b></td><td class="num">' + f2(r.sd) + '</td>' + r.dist.map(function (d) { return '<td class="num">' + pct(d.pct) + '</td>'; }).join('') + '</tr>'; }).join('') + '</table></div>';
+    } else if (it.kind === 'number') {
+      h += '<h3>' + esc(title) + '</h3><p>N = ' + it.n + ', mean = ' + f2(it.mean) + ', SD = ' + f2(it.sd) + ', min = ' + (it.min == null ? '–' : it.min) + ', max = ' + (it.max == null ? '–' : it.max) + '</p>';
+    } else {
+      h += '<h3>' + esc(title) + ' <span class="muted">(' + it.texts.length + ' answers)</span></h3>' + (it.texts.length ? '<ul>' + it.texts.slice(-50).reverse().map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' + (it.texts.length > 50 ? '<p class="muted">Showing latest 50 – all answers are in the Excel file.</p>' : '') : '<p class="muted">No answers.</p>');
+    }
+  });
+  h += '</div>';
+
+  var S = s.settings, respOn = RESPONDENT_FIELDS.filter(function (f) { return subs.some(function (x) { return x.respondent && x.respondent[f.key]; }); }).slice(0, 3);
+  h += '<div class="card"><h2>Individual responses</h2><div class="scroll"><table><tr><th>#</th><th>Submitted</th>' + respOn.map(function (f) { return '<th>' + esc(f.label) + '</th>'; }).join('') + '<th></th></tr>' +
+    subs.slice().reverse().slice(0, 300).map(function (x) {
+      return '<tr><td>' + x.id + '</td><td>' + esc(fmtDate(x.submitted_at)) + '</td>' + respOn.map(function (f) { return '<td>' + esc((x.respondent || {})[f.key] || '') + '</td>'; }).join('') +
+        '<td style="white-space:nowrap"><button class="small" data-view="' + x.id + '">View</button> <button class="small danger" data-delsub="' + x.id + '">Delete</button></td></tr>';
+    }).join('') + '</table></div>' + (subs.length > 300 ? '<p class="muted">Showing latest 300. All responses are in the downloads.</p>' : '') + '</div>';
+  pane.innerHTML = h;
+  wireResults();
+}
+function wireResults() {
+  $('#refresh').onclick = function () { state.subs = null; renderEditor(); };
+  $('#grp').onchange = function () { state.groupBy = this.value; renderResults(); };
+  $('#dlx').onclick = downloadExcel; $('#dlw').onclick = downloadWord; $('#dlp').onclick = printPdf; $('#dlc').onclick = downloadCsv;
+  $$('[data-view]').forEach(function (b) { b.onclick = function () { viewSub(+b.dataset.view); }; });
+  $$('[data-delsub]').forEach(function (b) {
+    b.onclick = async function () {
+      if (!confirm('Delete response #' + b.dataset.delsub + '? This cannot be undone.')) return;
+      try { await SB.rest('DELETE', 'submissions?id=eq.' + b.dataset.delsub); state.subs = state.subs.filter(function (x) { return x.id !== +b.dataset.delsub; }); state.counts[state.cur.id] = state.subs.length; toast('Response deleted'); renderResults(); }
+      catch (e) { handleErr(e); }
+    };
+  });
+}
+function viewSub(id) {
+  var x = state.subs.filter(function (s) { return s.id === id; })[0]; if (!x) return;
+  var ds = buildDataset(state.cur, [x]), row = ds.rows[0];
+  var m = document.createElement('div'); m.className = 'modal';
+  m.innerHTML = '<div class="card"><div class="row"><h2 class="grow">Response #' + x.id + '</h2><button id="mclose">Close</button></div><div class="scroll"><table>' +
+    ds.cols.filter(function (c) { return row[c.key] !== '' && row[c.key] !== 0 || c.kind !== 'flag'; }).map(function (c) {
+      var v = row[c.key]; if (c.kind === 'flag') v = v ? '✓' : '';
+      return '<tr><td style="width:45%">' + esc(c.q || c.label) + '<div class="muted">' + esc(c.label) + '</div></td><td>' + esc(v) + '</td></tr>';
+    }).join('') + '</table></div></div>';
+  document.body.appendChild(m);
+  m.onclick = function (e) { if (e.target === m || e.target.id === 'mclose') m.remove(); };
+}
+
+/* ---- report content shared by Word, PDF and the Excel summary ---- */
+function reportBlocks() {
+  var s = state.cur, subs = state.subs, sum = summarize(s, subs), B = [];
+  B.push({ type: 'title', text: s.title });
+  B.push({ type: 'p', text: 'Results report · generated ' + fmtDate(new Date().toISOString()) + ' · Total responses: ' + subs.length });
+  var dims = sum.items.filter(function (i) { return i.kind === 'likert'; });
+  if (dims.length) {
+    B.push({ type: 'h1', text: 'Dimension scores' });
+    B.push({ type: 'table', widths: [5, 1, 1, 1], rows: [['Dimension', 'N', 'Mean', 'SD']].concat(dims.map(function (d) { return [d.q.dimension || d.q.text || d.q.code, d.dimN, f2(d.dimMean), f2(d.dimSd)]; })) });
+  }
+  if (state.groupBy) {
+    var cmp = compareBy(s, subs, state.groupBy);
+    if (cmp && cmp.dims.length) {
+      B.push({ type: 'h1', text: 'Comparison by: ' + cmp.question.text });
+      var rows = [['Dimension'].concat(cmp.groups.map(function (g) { return g.label + ' (n=' + g.n + ')'; }))];
+      cmp.dims.forEach(function (d, i) { rows.push([d].concat(cmp.groups.map(function (g) { return f2(g.means[i].mean) + ' (SD ' + f2(g.means[i].sd) + ')'; }))); });
+      B.push({ type: 'table', widths: [3].concat(cmp.groups.map(function () { return 2; })), rows: rows });
+    }
+  }
+  B.push({ type: 'h1', text: 'Question-wise results' });
+  sum.items.forEach(function (it) {
+    var q = it.q, title = (it.num ? it.num + '. ' : '') + (q.text || q.dimension || q.code);
+    if (it.kind === 'choice') {
+      B.push({ type: 'h2', text: title });
+      B.push({ type: 'table', widths: [6, 1.4, 1.4], rows: [['Option', 'Frequency', 'Percent']].concat(it.rows.map(function (r) { return [r.label, r.count, pct(r.pct)]; })).concat([['Total answered', it.answered, it.answered ? (q.type === 'multi' ? '(multiple responses)' : '100.0%') : '']]) });
+      if (it.others.length) B.push({ type: 'p', text: 'Other answers: ' + it.others.join('; ') });
+    } else if (it.kind === 'likert') {
+      B.push({ type: 'h2', text: (q.text || q.dimension || 'Rating scale') + ' – dimension mean ' + f2(it.dimMean) + ' (SD ' + f2(it.dimSd) + ')' });
+      B.push({ type: 'table', widths: [0.7, 6, 0.8, 1, 1].concat(it.scale.map(function () { return 1; })),
+        rows: [['No.', 'Statement', 'N', 'Mean', 'SD'].concat(it.scale.map(function (x) { return x.value + ' ' + x.label; }))].concat(it.rows.map(function (r) { return [r.num || '', r.text, r.n, f2(r.mean), f2(r.sd)].concat(r.dist.map(function (d) { return pct(d.pct); })); })) });
+    } else if (it.kind === 'number') {
+      B.push({ type: 'h2', text: title });
+      B.push({ type: 'p', text: 'N = ' + it.n + ', Mean = ' + f2(it.mean) + ', SD = ' + f2(it.sd) + ', Min = ' + (it.min == null ? '–' : it.min) + ', Max = ' + (it.max == null ? '–' : it.max) });
+    } else {
+      B.push({ type: 'h2', text: title + ' (' + it.texts.length + ' answers)' });
+      it.texts.forEach(function (t, i) { B.push({ type: 'p', text: (i + 1) + '. ' + t }); });
+    }
+  });
+  return B;
+}
+function needData() { if (!state.subs || !state.subs.length) { toast('No responses to download yet.'); return false; } return true; }
+function downloadExcel() {
+  if (!needData()) return;
+  var ds = buildDataset(state.cur, state.subs);
+  var head = ds.cols.map(function (c) { return c.label; });
+  var summary = [];
+  reportBlocks().forEach(function (b) {
+    if (b.type === 'table') { b.rows.forEach(function (r) { summary.push(r.map(function (v) { var n = typeof v === 'string' && /^-?\d+(\.\d+)?$/.test(v) ? Number(v) : v; return n; })); }); summary.push([]); }
+    else summary.push([b.text]);
+  });
+  var blob = makeXlsx([
+    { name: 'Responses', rows: [head].concat(ds.rows.map(function (r) { return ds.cols.map(function (c) { return r[c.key]; }); })), widths: ds.cols.map(function (c) { return c.kind === 'flag' || c.kind === 'num' ? 12 : 22; }) },
+    { name: 'Coded for SPSS', rows: [head].concat(ds.coded.map(function (r) { return ds.cols.map(function (c) { return r[c.key]; }); })), widths: ds.cols.map(function () { return 14; }) },
+    { name: 'Summary', rows: summary, widths: [60, 14, 14, 14, 14, 14, 14, 14, 14, 14] },
+    { name: 'Codebook', rows: [['Column', 'Question', 'Values']].concat(ds.codebook.map(function (c) { return [c.column, c.question, c.values]; })), widths: [28, 80, 60], wrap: true }
+  ]);
+  downloadBlob(blob, fileBase(state.cur) + '.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+}
+function downloadWord() {
+  if (!needData()) return;
+  downloadBlob(makeDocx(reportBlocks()), fileBase(state.cur) + '-report.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+}
+function printPdf() {
+  if (!needData()) return;
+  var html = reportBlocks().map(function (b) {
+    if (b.type === 'title') return '<h1>' + esc(b.text) + '</h1>';
+    if (b.type === 'h1') return '<h2>' + esc(b.text) + '</h2>';
+    if (b.type === 'h2') return '<h3>' + esc(b.text) + '</h3>';
+    if (b.type === 'p') return '<p>' + esc(b.text) + '</p>';
+    return '<table>' + b.rows.map(function (r, i) { return '<tr>' + r.map(function (c) { return (i ? '<td>' : '<th>') + esc(c) + (i ? '</td>' : '</th>'); }).join('') + '</tr>'; }).join('') + '</table>';
+  }).join('');
+  $('#printArea', document).innerHTML = html;
+  var old = document.title; document.title = fileBase(state.cur) + '-report';
+  setTimeout(function () { window.print(); document.title = old; }, 50);
+}
+function downloadCsv() {
+  if (!needData()) return;
+  var ds = buildDataset(state.cur, state.subs);
+  function cell(v) { v = v == null ? '' : String(v); return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+  var lines = [ds.cols.map(function (c) { return cell(c.label); }).join(',')].concat(ds.rows.map(function (r) { return ds.cols.map(function (c) { return cell(r[c.key]); }).join(','); }));
+  downloadBlob(new Blob(['﻿' + lines.join('\r\n')]), fileBase(state.cur) + '.csv', 'text/csv;charset=utf-8');
+}
+
+/* =============== START =============== */
+function handleErr(e) {
+  if (e.status === 401 || /JWT|token/i.test(e.message || '')) { SB.logout(); showLogin('Your login has expired. Please log in again.'); return; }
+  toast('Error: ' + (e.message || e)); console.error(e);
+}
+function boot() {
+  var hash = new URLSearchParams(location.hash.slice(1));
+  if (hash.get('type') === 'recovery' && hash.get('access_token')) return showSetPassword(hash.get('access_token'));
+  if (!SB.session) return showLogin();
+  showList();
+}
+boot();
+})();
+</script>
+</body>
+</html>
